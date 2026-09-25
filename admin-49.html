@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#212121">
+<title>CODEN Control</title>
+<style>
+*{box-sizing:border-box}
+:root{--bg:#212121;--panel:#2a2a2a;--panel2:#303030;--line:#444;--text:#ececec;--muted:#9b9b9b;--green:#10a37f;--red:#ff7272}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+button,input,textarea{font:inherit}button{cursor:pointer}
+.layout{min-height:100vh;display:flex}
+.side{width:225px;position:fixed;right:0;top:0;bottom:0;background:#171717;border-left:1px solid #333;padding:16px;z-index:10}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;padding:5px 4px 24px}.mark{width:28px;height:28px;border-radius:8px;background:var(--green);display:grid;place-items:center;color:#fff}
+.nav{display:grid;gap:3px}.nav button{border:0;background:transparent;color:#aaa;text-align:right;border-radius:9px;padding:10px 11px;font-size:12px}.nav button:hover,.nav button.active{background:#2b2b2b;color:#fff}
+.sideFoot{position:absolute;bottom:15px;left:16px;right:16px;color:#777;font-size:10px}
+.main{margin-right:225px;width:calc(100% - 225px);padding:24px 28px 45px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.top h1{font-size:24px;margin:3px 0}.crumb{font-size:10px;color:#777}
+.actions{display:flex;gap:7px}.btn{border:1px solid var(--line);background:var(--panel);color:#ddd;border-radius:9px;padding:9px 12px;font-size:11px}.btn:hover{background:var(--panel2)}.btn.primary{background:#10a37f;border-color:#10a37f;color:#fff}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat{border:1px solid var(--line);background:#292929;border-radius:13px;padding:15px}.stat span{display:block;color:#999;font-size:10px}.stat b{display:block;font-size:24px;margin-top:7px}
+.body{display:grid;grid-template-columns:minmax(0,1fr) 345px;gap:12px;margin-top:12px}.panel{border:1px solid var(--line);background:#292929;border-radius:14px;padding:14px}.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.head h2{font-size:13px;margin:0}.head span{font-size:10px;color:#888}
+.tools{display:flex;gap:7px;margin-bottom:10px}.tools input{max-width:260px}
+input,textarea,select{width:100%;background:#1f1f1f;border:1px solid #494949;border-radius:9px;color:#eee;padding:9px 10px;outline:0;font-size:11px}input:focus,textarea:focus,select:focus{border-color:#777}
+.table{overflow:auto;border:1px solid #3e3e3e;border-radius:10px}table{border-collapse:collapse;width:100%;min-width:610px;font-size:11px}th,td{text-align:right;padding:10px;border-bottom:1px solid #3c3c3c;white-space:nowrap}th{color:#858585;font-size:9px;background:#242424}tr:last-child td{border-bottom:0}tr:hover td{background:#303030}
+.badge{font-size:9px;border-radius:20px;padding:4px 7px;background:#383838;color:#bbb}.badge.green{color:#72dfba;background:rgba(16,163,127,.12)}
+.open{border:1px solid #4b4b4b;background:transparent;color:#ddd;border-radius:7px;padding:6px 8px;font-size:9px}
+.profile{position:sticky;top:14px}.profileHead{display:flex;gap:10px;align-items:center;padding-bottom:12px;border-bottom:1px solid #414141}.avatar{width:40px;height:40px;border-radius:11px;background:#3b3b3b;display:grid;place-items:center;font-weight:700}.profile h3{margin:0;font-size:13px}.profileHead small{color:#888}
+.fields{display:grid;gap:10px;padding:13px 0}.field label{display:block;color:#777;font-size:9px;margin-bottom:4px}.field div{font-size:11px;line-height:1.6}
+.analysis{border:1px solid #484848;background:#242424;border-radius:11px;padding:11px}.analysisTop{display:flex;justify-content:space-between}.analysisTop b{font-size:10px}.score{font-size:21px;color:#fff;font-weight:800}.result{font-size:10px;line-height:1.7;color:#bbb;white-space:pre-wrap;margin-top:6px}.matchName{color:#72dfba;font-size:11px;margin-top:8px}
+.empty{text-align:center;padding:42px 10px;color:#777;font-size:11px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:50;padding:15px}.modal{max-width:540px;margin:7vh auto;background:#292929;border:1px solid #484848;border-radius:14px;padding:17px}.modalHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.modal h2{font-size:15px;margin:0}.x{border:0;background:transparent;color:#aaa;font-size:20px}
+.modal label{display:block;color:#999;font-size:10px;margin:10px 0 5px}.help{color:#777;font-size:9px;line-height:1.7;margin-top:8px}.modalActions{display:flex;gap:7px;margin-top:14px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translate(-50%,12px);opacity:0;background:#eee;color:#222;border-radius:9px;padding:9px 12px;font-size:10px;z-index:80;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:1000px){.stats{grid-template-columns:repeat(2,1fr)}.body{grid-template-columns:1fr}.profile{position:static}}
+@media(max-width:720px){.layout{display:block}.side{position:static;width:100%;height:auto;padding:9px;border-left:0;border-bottom:1px solid #333}.logo{padding:2px 3px 9px}.nav{display:flex;gap:4px;overflow:auto}.nav button{white-space:nowrap}.sideFoot{display:none}.main{margin:0;width:100%;padding:15px 11px}.top{align-items:flex-end}.top h1{font-size:20px}.actions .btn{padding:8px}.stats{gap:7px}.stat{padding:12px}.stat b{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="overlay" id="lockScreen" style="display:flex;align-items:center;justify-content:center">
+ <div class="modal" style="max-width:320px">
+  <div class="modalHead"><h2>دخول الأدمن</h2></div>
+  <label>الباسورد</label>
+  <input id="lockPass" type="password" placeholder="اكتب الباسورد">
+  <div class="modalActions"><button class="btn primary" id="lockEnter" style="width:100%">دخول</button></div>
+ </div>
+</div>
+<div class="layout" id="layout" style="display:none">
+<aside class="side">
+ <div class="logo"><div class="mark">✦</div>CODEN Control</div>
+ <nav class="nav">
+  <button class="active">Overview</button>
+  <button id="settingsBtn">AI Settings</button>
+ </nav>
+ <div class="sideFoot" id="connection">Connecting to Firebase…</div>
+</aside>
+<main class="main">
+ <div class="top"><div><div class="crumb">CODEN / MATCHING</div><h1>Control room</h1></div><div class="actions"><button class="btn" id="refresh">Refresh</button><button class="btn primary" id="analyzeAll">Analyze waiting</button></div></div>
+ <section class="stats">
+  <div class="stat"><span>Profiles</span><b id="total">0</b></div>
+  <div class="stat"><span>Waiting</span><b id="waiting">0</b></div>
+  <div class="stat"><span>Analyzed</span><b id="done">0</b></div>
+  <div class="stat"><span>Matches</span><b id="matched">0</b></div>
+ </section>
+ <section class="body">
+  <div class="panel">
+   <div class="head"><h2>People</h2><span>Live from Firebase</span></div>
+   <div class="tools"><input id="search" placeholder="Search name, idea, skill…"><select id="filter"><option value="all">All</option><option value="waiting">Waiting</option><option value="analyzed">Analyzed</option></select></div>
+   <div class="table"><table><thead><tr><th>Name</th><th>Field</th><th>Looking for</th><th>Status</th><th></th></tr></thead><tbody id="tbody"></tbody></table><div class="empty" id="empty">No profiles yet.</div></div>
+  </div>
+  <div class="panel profile" id="profile"><div class="empty">اختار شخص من الجدول لعرض بياناته.</div></div>
+ </section>
+</main>
+</div>
+
+<div class="overlay" id="overlay">
+ <div class="modal">
+  <div class="modalHead"><h2>Z.ai / GLM</h2><button class="x" id="close">×</button></div>
+  <label>ضع الـAPI هنا</label>
+  <input id="apiKey" type="password" placeholder="Z.ai API key">
+  <label>Model</label>
+  <input id="model" value="GLM-5.3" placeholder="GLM-5.3">
+  <label>API Base URL</label>
+  <input id="baseUrl" value="https://api.z.ai/api/paas/v4/chat/completions">
+  <div class="help">المفتاح يُحفظ في Local Storage لهذا المتصفح فقط. لا تضع صفحة الأدمن على رابط عام إذا كان المفتاح مستخدمًا مباشرة من المتصفح.</div>
+  <div class="modalActions"><button class="btn primary" id="save">Save</button><button class="btn" id="test">Test API</button></div>
+ </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import {getDatabase,ref,onValue,set,update} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+const firebaseConfig={
+ apiKey:"AIzaSyBYWT4JCyhD46YqPGvTVNBLzwUuf1QgleI",
+ authDomain:"store-ff93c.firebaseapp.com",
+ databaseURL:"https://store-ff93c-default-rtdb.europe-west1.firebasedatabase.app",
+ projectId:"store-ff93c",storageBucket:"store-ff93c.firebasestorage.app",
+ messagingSenderId:"679453799044",appId:"1:679453799044:web:eb129247ee6986a0cac8d1",measurementId:"G-FL5JH70ZVG"
+};
+const db=getDatabase(initializeApp(firebaseConfig));
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+const toast=m=>{const t=$("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)};
+let profiles={},selected=null;
+
+function cfg(){
+ return {key:$("apiKey").value.trim()||localStorage.coden_zai_key||"",model:$("model").value.trim()||localStorage.coden_zai_model||"GLM-5.3",url:$("baseUrl").value.trim()||localStorage.coden_zai_url||"https://api.z.ai/api/paas/v4/chat/completions"}
+}
+function render(){
+ const q=$("search").value.toLowerCase(),f=$("filter").value;
+ const arr=Object.entries(profiles).filter(([id,p])=>{
+  const blob=JSON.stringify(p).toLowerCase(),status=p.aiStatus==="analyzed"?"analyzed":"waiting";
+  return (!q||blob.includes(q))&&(f==="all"||status===f)
+ }).sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0));
+ $("total").textContent=Object.keys(profiles).length;
+ $("waiting").textContent=Object.values(profiles).filter(p=>p.aiStatus!=="analyzed").length;
+ $("done").textContent=Object.values(profiles).filter(p=>p.aiStatus==="analyzed").length;
+ $("matched").textContent=Object.values(profiles).filter(p=>p.matchedWith||p.matchedBy).length;
+ $("empty").style.display=arr.length?"none":"block";
+ $("tbody").innerHTML=arr.map(([id,p])=>`<tr><td><b>${esc(p.name||"Unnamed")}</b><div style="font-size:9px;color:#777">${esc(p.email||p.whatsapp||"")}</div></td><td>${esc(p.field||"—")}</td><td>${esc(p.lookingFor||"—")}</td><td><span class="badge ${p.aiStatus==="analyzed"?"green":""}">${p.aiStatus==="analyzed"?"Analyzed":"Waiting"}</span></td><td><button class="open" data-id="${esc(id)}">Open</button></td></tr>`).join("");
+ document.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>{selected=b.dataset.id;renderProfile()});
+}
+function matchedByHTML(p){
+ const list=p.matchedBy?Object.entries(p.matchedBy):[];
+ if(!list.length)return"";
+ return `<div class="field" style="border:1px solid #3e3e3e;border-radius:10px;padding:9px 10px;margin-top:-2px">
+  <label>MATCHED BY (${list.length})</label>
+  <div style="display:flex;flex-direction:column;gap:6px">
+   ${list.sort((a,b)=>(b[1].at||0)-(a[1].at||0)).map(([id,m])=>`<div style="display:flex;justify-content:space-between;font-size:10px"><span>${esc(m.name||"Unnamed")}</span><span style="color:#72dfba">${esc(m.score)}%</span></div>`).join("")}
+  </div>
+ </div>`
+}
+function renderProfile(){
+ const p=profiles[selected];if(!p)return;
+ const ai=p.aiResult;
+ $("profile").innerHTML=`<div class="profileHead"><div class="avatar">${esc((p.name||"?")[0].toUpperCase())}</div><div><h3>${esc(p.name||"Unnamed")}</h3><small>${esc(p.field||"No field")}</small></div></div>
+ <div class="fields">
+ <div class="field"><label>IDEA</label><div>${esc(p.idea||"—")}</div></div>
+ <div class="field"><label>SKILLS</label><div>${esc(p.skills||"—")}</div></div>
+ <div class="field"><label>LOOKING FOR</label><div>${esc(p.lookingFor||"—")}</div></div>
+ <div class="field"><label>CAN OFFER</label><div>${esc(p.offer||"—")}</div></div>
+ <div class="field"><label>CONTACT</label><div>${esc(p.email||p.whatsapp||"—")}</div></div></div>
+ ${matchedByHTML(p)}
+ <div class="analysis"><div class="analysisTop"><b>GLM MATCH ANALYSIS</b><span class="score">${ai?.score!=null?esc(ai.score)+"%":"—"}</span></div>
+ <div class="matchName">${ai?.bestMatchName?"Best match: "+esc(ai.bestMatchName):"No match selected yet"}</div>
+ <div class="result">${esc(ai?.summary||"لم يتم تحليل هذا الـProfile بعد.")}</div>
+ <button class="btn primary" id="analyzeOne" style="width:100%;margin-top:10px">${ai?"Re-analyze":"Analyze profile"}</button></div>`;
+ $("analyzeOne").onclick=()=>analyze(selected);
+}
+async function callGLM(prompt){
+ const c=cfg();if(!c.key){$("overlay").style.display="block";throw new Error("ضع الـAPI أولاً")}
+ const r=await fetch(c.url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+c.key},body:JSON.stringify({
+   model:c.model,messages:[
+    {role:"system",content:"You are CODEN's matching analyst. Return ONLY valid JSON."},
+    {role:"user",content:prompt}
+   ],temperature:.2
+ })});
+ const data=await r.json();if(!r.ok)throw new Error(data?.error?.message||"Z.ai API request failed");
+ const text=data?.choices?.[0]?.message?.content||"";
+ return JSON.parse(text.replace(/^```json\s*|\s*```$/g,"").trim());
+}
+async function analyze(id){
+ const p=profiles[id];if(!p)return;
+ const candidates=Object.entries(profiles).filter(([x])=>x!==id).map(([x,u])=>({id:x,name:u.name,field:u.field,idea:u.idea,skills:u.skills,lookingFor:u.lookingFor,offer:u.offer}));
+ const prompt=`Analyze this CODEN user and choose the strongest credible match from the candidate pool.
+Return exactly:
+{"score":0,"summary":"Arabic concise explanation","bestMatchId":null,"bestMatchName":null,"reasons":["...","..."],"nextMessage":"Arabic message"}
+User:
+${JSON.stringify({id,name:p.name,field:p.field,idea:p.idea,skills:p.skills,lookingFor:p.lookingFor,offer:p.offer})}
+Candidates:
+${JSON.stringify(candidates)}
+Rules: score 0-100; never invent facts; use null when no credible match; prioritize complementary skills, compatible needs/offers, domain fit and project stage.`;
+ try{
+  toast("GLM is analyzing…");const result=await callGLM(prompt);
+  const aiResult={score:Number(result.score)||0,summary:(result.summary||"")+"\\n\\n"+(result.reasons||[]).map(x=>"• "+x).join("\\n"),bestMatchName:result.bestMatchName||"",nextMessage:result.nextMessage||"",analyzedAt:Date.now()};
+  await set(ref(db,"matchingProfiles/"+id),{...p,aiStatus:"analyzed",matchStatus:result.bestMatchId?"matched":"no_match",matchedWith:result.bestMatchId||null,aiResult});
+  const matchId=result.bestMatchId;
+  if(matchId&&profiles[matchId]){
+   await update(ref(db,"matchingProfiles/"+matchId+"/matchedBy/"+id),{name:p.name||"",score:aiResult.score,at:Date.now()});
+  }
+  toast("Analysis saved");render();renderProfile();
+ }catch(e){console.error(e);toast("AI error: "+e.message)}
+}
+onValue(ref(db,"matchingProfiles"),s=>{profiles=s.val()||{};$("connection").textContent="Firebase · live";render();if(selected)renderProfile()},e=>{$("connection").textContent="Firebase error";toast(e.message)});
+$("search").oninput=render;$("filter").onchange=render;$("refresh").onclick=render;
+$("settingsBtn").onclick=()=>{$("overlay").style.display="block"};
+$("close").onclick=()=>{$("overlay").style.display="none"};
+$("overlay").onclick=e=>{if(e.target.id==="overlay")$("overlay").style.display="none"};
+$("save").onclick=()=>{const c=cfg();localStorage.coden_zai_key=c.key;localStorage.coden_zai_model=c.model;localStorage.coden_zai_url=c.url;$("overlay").style.display="none";toast("Saved locally")};
+$("test").onclick=async()=>{try{await callGLM("Return JSON exactly: {\"ok\":true,\"message\":\"CODEN connection works\"}");toast("Z.ai / GLM connection works")}catch(e){toast(e.message)}};
+$("analyzeAll").onclick=async()=>{const ids=Object.entries(profiles).filter(([,p])=>p.aiStatus!=="analyzed").map(([id])=>id);if(!ids.length){toast("Nothing waiting");return}for(const id of ids)await analyze(id)};
+$("apiKey").value=localStorage.coden_zai_key||"";$("model").value=localStorage.coden_zai_model||"GLM-5.3";$("baseUrl").value=localStorage.coden_zai_url||"https://api.z.ai/api/paas/v4/chat/completions";
+const ADMIN_PASSWORD="coden2026"; // غيّر الباسورد هنا لأي حاجة تحبها
+function unlock(){$("lockScreen").style.display="none";$("layout").style.display="flex"}
+if(localStorage.coden_admin_unlocked==="1"){unlock()}
+$("lockEnter").onclick=()=>{
+ if($("lockPass").value===ADMIN_PASSWORD){localStorage.coden_admin_unlocked="1";unlock()}
+ else{toast("باسورد غلط")}
+};
+$("lockPass").addEventListener("keydown",e=>{if(e.key==="Enter")$("lockEnter").click()});
+</script>
+</body>
+</html>
