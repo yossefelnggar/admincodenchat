@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>CODEN Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04100f;--t:#F5F1E8;--tl:#19d3b8;--o:#F26B38;--m:rgba(245,241,232,.66);--g:rgba(255,255,255,.06);--gb:rgba(255,255,255,.13)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--t);font-family:Cairo,sans-serif;line-height:1.6}
+.aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;background:radial-gradient(120% 70% at 50% -10%,#0a3a36,transparent 60%)}
+.aurora i{position:absolute;border-radius:50%;filter:blur(90px)}
+.aurora i:nth-child(1){width:480px;height:480px;background:#0e7c6e;opacity:.5;top:-120px;left:-100px}
+.aurora i:nth-child(2){width:420px;height:420px;background:var(--o);opacity:.2;top:40%;right:-140px}
+.w{max-width:1100px;margin:0 auto;padding:20px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.logo{font:800 16px Poppins;padding:8px 18px;border-radius:999px;background:var(--g);border:1px solid var(--gb);backdrop-filter:blur(14px)}
+.card{background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border:1px solid var(--gb);backdrop-filter:blur(20px);border-radius:24px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.1)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-bottom:14px}
+.kpi b{font:800 42px/1.1 Poppins;display:block;background:linear-gradient(180deg,#fff,var(--tl));-webkit-background-clip:text;background-clip:text;color:transparent}
+.kpi span{color:var(--m);font-size:13px;font-weight:700}
+h3{margin:0 0 12px;font-size:15px}
+.bar{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin:7px 0}
+.bar i{display:block;height:10px;border-radius:6px;background:linear-gradient(90deg,var(--tl),var(--o));min-width:3px}
+.bar em{font-style:normal;color:var(--m);width:96px;flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+input,select,button{font:700 14px Cairo;padding:11px 16px;border-radius:14px;border:1px solid var(--gb)}
+input,select{background:rgba(255,255,255,.05);color:var(--t)}
+select option{background:#0a1f1d;color:var(--t)}
+::placeholder{color:rgba(245,241,232,.4)}
+input:focus,select:focus{outline:none;border-color:var(--tl);box-shadow:0 0 0 4px rgba(25,211,184,.15)}
+button{background:var(--g);color:var(--t);cursor:pointer;transition:.2s}
+button:hover{border-color:var(--tl);transform:translateY(-1px)}
+button:active{transform:scale(.97)}
+button.o,.login button{background:linear-gradient(135deg,var(--o),#ff9a5c);color:#1a0a03;border:0;box-shadow:0 8px 24px rgba(242,107,56,.35)}
+.tools{display:flex;gap:8px;margin:14px 0;flex-wrap:wrap}
+.tools input{flex:1;min-width:160px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:1150px}
+th{text-align:right;color:var(--m);padding:10px 8px;border-bottom:1px solid var(--gb);cursor:pointer;white-space:nowrap}
+th:hover{color:var(--tl)}
+td{padding:10px 8px;border-bottom:1px solid rgba(255,255,255,.07);vertical-align:top;max-width:260px}
+tbody tr:hover{background:rgba(25,211,184,.06)}
+td.en{direction:ltr;text-align:left}
+.login{max-width:360px;margin:12vh auto}
+.login input{width:100%;margin-bottom:10px}
+.login button{width:100%}
+.err{color:#ff8a80;font-size:13px;min-height:20px}
+.hide{display:none!important}
+button.danger{background:linear-gradient(135deg,#e5484d,#ff7a6e);color:#fff;border:0;box-shadow:0 8px 24px rgba(229,72,77,.35)}
+button.danger:disabled{opacity:.4;box-shadow:none;cursor:not-allowed}
+.ib{padding:6px 10px;min-height:0;border-radius:10px;font-size:13px}
+.ib.d:hover{border-color:#ff8a80;color:#ff8a80}
+td select{padding:6px 8px;font-size:12px;border-radius:10px;min-width:96px}
+td input[type=checkbox],th input[type=checkbox]{width:18px;height:18px;padding:0;accent-color:var(--tl)}
+.acts{display:flex;gap:6px;white-space:nowrap}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0a1f1d;border:1px solid var(--tl);padding:10px 20px;border-radius:14px;font-weight:700;font-size:14px;z-index:20;opacity:0;pointer-events:none;transition:.3s}
+#toast.on{opacity:1}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="toast" role="status"></div>
+<div class="aurora" aria-hidden="true"><i></i><i></i></div>
+<div class="w">
+
+<div id="login" class="login card">
+  <div class="logo" style="display:inline-block;margin-bottom:14px">CODEN Admin</div>
+  <input id="em" type="email" placeholder="Email" dir="ltr" autocomplete="username">
+  <input id="pw" type="password" placeholder="Password" dir="ltr" autocomplete="current-password">
+  <div class="err" id="le" role="alert"></div>
+  <button id="lb">تسجيل الدخول</button>
+</div>
+
+<div id="app" class="hide">
+  <div class="top"><span class="logo">CODEN Admin</span><button id="out">خروج</button></div>
+
+  <div class="grid">
+    <div class="card kpi"><b id="k1">0</b><span>إجمالي المسجلين</span></div>
+    <div class="card kpi"><b id="k2">0</b><span>سجلوا خلال 7 أيام</span></div>
+    <div class="card kpi"><b id="k3">0%</b><span>أكملوا الاستبيان</span></div>
+    <div class="card kpi"><b id="k4">0%</b><span>مستعدون للدفع</span></div>
+  </div>
+
+  <div class="grid">
+    <div class="card"><h3>النوع</h3><div id="c-type"></div></div>
+    <div class="card"><h3>يبحثون عن</h3><div id="c-look"></div></div>
+    <div class="card"><h3>الاستعداد للدفع</h3><div id="c-wtp"></div></div>
+    <div class="card"><h3>الطلب مقابل العرض</h3><div id="c-gap"></div></div>
+    <div class="card"><h3>الميزات المطلوبة (تصويت)</h3><div id="c-feat"></div></div>
+    <div class="card"><h3>المصدر (utm)</h3><div id="c-utm"></div></div>
+    <div class="card"><h3>اللغة</h3><div id="c-lang"></div></div>
+    <div class="card"><h3>التسجيلات آخر 14 يوم</h3><div id="c-day"></div></div>
+    <div class="card"><h3>أكثر المُحيلين</h3><div id="c-ref"></div></div>
+  </div>
+
+  <div class="card">
+    <h3>المسجلون</h3>
+    <div class="tools">
+      <input id="q" placeholder="بحث بالاسم / الإيميل / المشكلة">
+      <select id="seg"><option value="all">كل المسجلين</option><option value="fdev">مؤسسون يبحثون عن مطور</option><option value="devs">المطورون</option><option value="cof">يبحثون عن Co-Founder</option><option value="pay">مستعدون للدفع</option><option value="ref">جاؤوا بدعوة</option><option value="s_new">حالة: جديد</option><option value="s_contacted">حالة: تم التواصل</option><option value="s_matched">حالة: تمت المطابقة</option></select>
+      <button id="copyE">نسخ الإيميلات</button>
+      <button class="danger" id="delSel" disabled>حذف المحدد (0)</button>
+      <button id="sync">مزامنة العداد</button>
+      <button class="o" id="csv">تصدير CSV</button>
+    </div>
+    <div class="tw"><table>
+      <thead><tr><th><input type="checkbox" id="all" aria-label="select all"></th><th data-k="ts">التاريخ</th><th data-k="name">الاسم</th><th data-k="email">الإيميل</th><th data-k="userType">النوع</th><th data-k="lookingFor">يبحث عن</th><th data-k="features">الميزات</th><th data-k="wtp">الدفع</th><th data-k="problem">المشكلة</th><th data-k="ref">محال من</th><th data-k="status">الحالة</th><th>ملاحظة</th><th></th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+  </div>
+</div>
+</div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import {getDatabase,ref,onValue,remove,update,get,runTransaction} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+const app=initializeApp({
+  apiKey:"AIzaSyAkgLWq9hollHI7a3k701MbBmEKF0w6MjQ",
+  authDomain:"rafal-d11af.firebaseapp.com",
+  databaseURL:"https://rafal-d11af-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"rafal-d11af",
+  storageBucket:"rafal-d11af.firebasestorage.app",
+  messagingSenderId:"410187172109",
+  appId:"1:410187172109:web:f7dc501d34c4f1f55a4844"
+});
+const auth=getAuth(app),db=getDatabase(app);
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+const SEG={all:()=>true,
+  fdev:r=>r.userType==="Founder"&&(r.lookingFor||[]).includes("Developer"),
+  devs:r=>r.userType==="Developer",
+  cof:r=>(r.lookingFor||[]).includes("Co-Founder"),
+  pay:r=>r.wtp&&r.wtp!=="0",
+  ref:r=>!!r.ref,
+  s_new:r=>!r.status||r.status==="new",s_contacted:r=>r.status==="contacted",s_matched:r=>r.status==="matched"};
+const ST={new:"جديد",contacted:"تم التواصل",matched:"تمت المطابقة",rejected:"مرفوض"};
+const sel=new Set();
+let all=[],sortK="ts",asc=false;
+
+$("lb").onclick=async()=>{
+  $("le").textContent="";
+  try{await signInWithEmailAndPassword(auth,$("em").value.trim(),$("pw").value)}
+  catch{$("le").textContent="بيانات الدخول غير صحيحة."}
+};
+$("pw").onkeydown=e=>{if(e.key==="Enter")$("lb").click()};
+$("out").onclick=()=>signOut(auth);
+
+onAuthStateChanged(auth,u=>{
+  $("login").classList.toggle("hide",!!u);
+  $("app").classList.toggle("hide",!u);
+  if(u)onValue(ref(db,"waitlist"),
+    s=>{all=Object.entries(s.val()||{}).map(([k,x])=>({...x,_k:k}));render()},
+    ()=>{alert("لا توجد صلاحية قراءة. تأكد من إضافة UID الأدمن في Rules.");signOut(auth)});
+});
+
+function bars(id,counts){
+  const e=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,8),max=Math.max(1,...e.map(x=>x[1]));
+  $(id).innerHTML=e.length?e.map(([k,v])=>`<div class="bar"><em>${esc(k)}</em><i style="width:${v/max*100}%"></i><span>${v}</span></div>`).join(""):'<span style="color:var(--m);font-size:13px">لا بيانات بعد</span>';
+}
+const tally=(arr)=>arr.reduce((o,k)=>(k&&(o[k]=(o[k]||0)+1),o),{});
+
+function render(){
+  const n=all.length,wk=Date.now()-6048e5;
+  const done=all.filter(r=>r.problem||r.wtp||(r.lookingFor||[]).length).length;
+  const pay=all.filter(r=>r.wtp&&r.wtp!=="0").length,ans=all.filter(r=>r.wtp).length;
+  $("k1").textContent=n;
+  $("k2").textContent=all.filter(r=>r.ts>wk).length;
+  $("k3").textContent=n?Math.round(done/n*100)+"%":"0%";
+  $("k4").textContent=ans?Math.round(pay/ans*100)+"%":"0%";
+  bars("c-type",tally(all.map(r=>r.userType)));
+  bars("c-look",tally(all.flatMap(r=>r.lookingFor||[])));
+  bars("c-wtp",tally(all.map(r=>r.wtp)));
+  bars("c-utm",tally(all.map(r=>r.utm)));
+  const sup=tally(all.map(r=>r.userType)),dem=tally(all.flatMap(r=>r.lookingFor||[]));
+  $("c-gap").innerHTML=[["Developer","Developer"],["Designer","Designer"],["Marketing","Business"],["Co-Founder","Founder"]].map(([d,u])=>{const D=dem[d]||0,S=sup[u]||0;
+    return `<div class="bar"><em>${d}</em><span style="color:${D>S?"#ff8a80":"var(--t)"}">طلب ${D} / عرض ${S}</span></div>`}).join("");
+  bars("c-feat",tally(all.flatMap(r=>r.features||[])));
+  bars("c-lang",tally(all.map(r=>r.lang)));
+  const days={};for(let i=13;i>=0;i--){days[new Date(Date.now()-i*864e5).toISOString().slice(5,10)]=0}
+  all.forEach(r=>{const d=new Date(r.ts).toISOString().slice(5,10);if(d in days)days[d]++});
+  const mx=Math.max(1,...Object.values(days));
+  $("c-day").innerHTML='<div style="display:flex;align-items:flex-end;gap:4px;height:90px">'+Object.entries(days).map(([d,v])=>`<div title="${d}: ${v}" style="flex:1;background:var(--o);border-radius:4px 4px 0 0;height:${Math.max(3,v/mx*100)}%"></div>`).join("")+'</div>';
+  const byCode=Object.fromEntries(all.map(r=>[r.code,r.email]));
+  bars("c-ref",tally(all.map(r=>r.ref&&(byCode[r.ref]||r.ref))));
+  table();
+}
+
+function view(){
+  const q=$("q").value.trim().toLowerCase();
+  let r=all.filter(x=>SEG[$("seg").value](x)&&(!q||JSON.stringify(x).toLowerCase().includes(q)));
+  r.sort((a,b)=>{let x=a[sortK]??"",y=b[sortK]??"";if(Array.isArray(x))x=x.join();if(Array.isArray(y))y=y.join();return (x>y?1:x<y?-1:0)*(asc?1:-1)});
+  return r;
+}
+function table(){
+  const rows=view();
+  $("rows").innerHTML=rows.map(r=>`<tr data-k="${esc(r._k)}">
+    <td><input type="checkbox" class="sc" ${sel.has(r._k)?"checked":""}></td>
+    <td>${new Date(r.ts).toLocaleDateString("ar-EG")}</td><td>${esc(r.name)}</td><td class="en">${esc(r.email)}</td>
+    <td>${esc(r.userType)}</td><td>${esc((r.lookingFor||[]).join("، "))}</td><td>${esc((r.features||[]).join("، "))}</td><td>${esc(r.wtp)}</td>
+    <td>${esc(r.problem)}</td><td>${esc(r.ref)}</td>
+    <td><select class="st">${Object.entries(ST).map(([v,l])=>`<option value="${v}" ${(r.status||"new")===v?"selected":""}>${l}</option>`).join("")}</select></td>
+    <td>${esc(r.note)}</td>
+    <td class="acts"><button class="ib nt" title="ملاحظة">✎</button><button class="ib cp" title="نسخ الإيميل">⧉</button><button class="ib d dl" title="حذف">🗑</button></td></tr>`).join("");
+  $("all").checked=rows.length>0&&rows.every(r=>sel.has(r._k));
+  $("delSel").disabled=!sel.size;$("delSel").textContent=`حذف المحدد (${sel.size})`;
+}
+const toast=m=>{const t=$("toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2600)};
+const rowOf=k=>all.find(r=>r._k===k);
+async function del(keys){
+  if(!keys.length||!confirm(`حذف ${keys.length} تسجيل نهائيًا؟ لا يمكن التراجع.`))return;
+  try{
+    const rows=keys.map(rowOf).filter(Boolean);
+    const feed=(await get(ref(db,"feed"))).val()||{};
+    for(const r of rows){
+      await remove(ref(db,"waitlist/"+r._k));
+      if(r.code){
+        await remove(ref(db,"refs/"+r.code)).catch(()=>{});
+        for(const fk of Object.keys(feed))if(fk.endsWith("-"+r.code))await remove(ref(db,"feed/"+fk)).catch(()=>{});
+      }
+      sel.delete(r._k);
+    }
+    await runTransaction(ref(db,"stats/count"),c=>Math.max(0,(c||0)-rows.length));
+    toast(`تم حذف ${rows.length}`);
+  }catch{toast("فشل الحذف. راجع الـ Rules.")}
+}
+$("rows").addEventListener("click",async e=>{
+  const tr=e.target.closest("tr");if(!tr)return;const k=tr.dataset.k,r=rowOf(k);
+  if(e.target.closest(".dl"))del([k]);
+  else if(e.target.closest(".cp")){navigator.clipboard.writeText(r.email);toast("تم نسخ الإيميل")}
+  else if(e.target.closest(".nt")){
+    const n=prompt("ملاحظة على هذا المسجل:",r.note||"");
+    if(n!==null)update(ref(db,"waitlist/"+k),{note:n.slice(0,300)}).then(()=>toast("تم الحفظ")).catch(()=>toast("فشل الحفظ"));
+  }
+  else if(e.target.classList.contains("sc")){e.target.checked?sel.add(k):sel.delete(k);table()}
+});
+$("rows").addEventListener("change",e=>{
+  if(!e.target.classList.contains("st"))return;
+  update(ref(db,"waitlist/"+e.target.closest("tr").dataset.k),{status:e.target.value}).then(()=>toast("تم تحديث الحالة")).catch(()=>toast("فشل التحديث"));
+});
+$("all").onchange=e=>{view().forEach(r=>e.target.checked?sel.add(r._k):sel.delete(r._k));table()};
+$("delSel").onclick=()=>del([...sel]);
+$("sync").onclick=async()=>{
+  if(!confirm(`ضبط العداد العام على ${all.length}؟`))return;
+  try{await runTransaction(ref(db,"stats/count"),()=>all.length);toast("تمت المزامنة")}catch{toast("فشلت المزامنة. راجع الـ Rules.")}
+};
+$("q").oninput=table;$("seg").onchange=table;
+$("copyE").onclick=()=>{navigator.clipboard.writeText(view().map(r=>r.email).join(", "));$("copyE").textContent="تم النسخ ("+view().length+")"};
+document.querySelectorAll("th").forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(!k)return;asc=sortK===k?!asc:false;sortK=k;table()});
+
+$("csv").onclick=()=>{
+  const h=["date","name","email","type","lookingFor","features","wtp","problem","ref","utm","status","note"];
+  const f=v=>{v=String(v??"");if(/^[=+\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'}; // blocks CSV formula injection
+  const rows=view().map(r=>[new Date(r.ts).toISOString(),r.name,r.email,r.userType,(r.lookingFor||[]).join("|"),(r.features||[]).join("|"),r.wtp,r.problem,r.ref,r.utm,r.status||"new",r.note].map(f).join(","));
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob(["\ufeff"+h.join(",")+"\n"+rows.join("\n")],{type:"text/csv;charset=utf-8"}));
+  a.download="coden-waitlist.csv";a.click();
+};
+</script>
+</body>
+</html>
